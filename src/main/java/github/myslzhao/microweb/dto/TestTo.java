@@ -1,5 +1,4 @@
 package github.myslzhao.microweb.dto;
 
-
-public class FromService {
+public class TestTo {
 }
