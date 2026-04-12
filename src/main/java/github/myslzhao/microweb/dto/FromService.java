@@ -1,6 +1,8 @@
 package github.myslzhao.microweb.dto;
 
+import github.myslzhao.microweb.service.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -11,12 +13,13 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class FromService {
+
 	/**
 	 * 样本点类
 	 *
 	 * @author MyslZhao
 	 */
-    @Schema(name = "Point", description = "样本点")
+	@Schema(name = "Point", description = "样本点")
 	public static class Point {
 
 		@Schema(description = "x坐标", type = "double")
@@ -54,6 +57,9 @@ public class FromService {
 	@Schema(description = "点集序列", minContains = 1, type = "array")
 	private List<Point> points;
 
+	@Schema(description = "点集状态码", defaultValue = "0", type = "int")
+	private int statusCode = 0;
+
 	public FromService() {
 	}
 
@@ -65,8 +71,15 @@ public class FromService {
 		return points;
 	}
 
+	public int getstatusCode() {
+		return statusCode;
+	}
+
 	public void setPoints(List<Point> points) {
 		this.points = points;
 	}
 
+	public void setstatusCode(@NonNull Status status) {
+		this.statusCode = status.getCode();
+	}
 }
