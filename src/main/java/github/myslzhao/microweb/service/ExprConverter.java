@@ -17,21 +17,19 @@ public class ExprConverter {
 	static {
 		FUNCTION_MAP.put("ln", "Ln");
 		FUNCTION_MAP.put("log", "Log");
-		FUNCTION_MAP.put("log10", "Log10");
 		FUNCTION_MAP.put("sin", "Sin");
 		FUNCTION_MAP.put("cos", "Cos");
 		FUNCTION_MAP.put("tan", "Tan");
 		FUNCTION_MAP.put("cot", "Cot");
 		FUNCTION_MAP.put("sec", "Sec");
 		FUNCTION_MAP.put("csc", "Csc");
-		FUNCTION_MAP.put("asin", "ArcSin");
-		FUNCTION_MAP.put("acos", "ArcCos");
-		FUNCTION_MAP.put("atan", "ArcTan");
+		FUNCTION_MAP.put("arcsin", "ArcSin");
+		FUNCTION_MAP.put("arccos", "ArcCos");
+		FUNCTION_MAP.put("arctan", "ArcTan");
 		FUNCTION_MAP.put("sinh", "Sinh");
 		FUNCTION_MAP.put("cosh", "Cosh");
 		FUNCTION_MAP.put("tanh", "Tanh");
 		FUNCTION_MAP.put("sqrt", "Sqrt");
-		FUNCTION_MAP.put("exp", "Exp");
 		FUNCTION_MAP.put("abs", "Abs");
 	}
 
@@ -43,6 +41,9 @@ public class ExprConverter {
 	 * @return 状态码：NORMAL（成功）, UNSTANDARD（格式错误）, UNSUPPORTED（不支持的写法）
 	 */
 	public Status convert(String input, StringBuilder out) {
+		// 0. 去除空格
+		input = input.replaceAll(" ", "");
+
 		// 1. 空值检查
 		if (input == null || (input = input.trim()).isEmpty()) {
 			return Status.UNSTANDARD;
@@ -84,11 +85,11 @@ public class ExprConverter {
 
 		// 6.2 等号替换：= -> ==
 		expr = expr.replaceAll("(?<![!<>])=(?![=>])", "==");
-
 		// 6.3 函数名规范化（只替换名称，不自动加括号）
 		expr = normalizeFunctionNames(expr);
 
 		// 6.4 插入隐式乘号
+		// HACK: 使用简单的regEx识别隐式乘号，无法覆盖全部情况，暂时选择对用户输入限制
 		expr = insertImplicitMultiplication(expr);
 
 		// 7. 检查是否包含不支持的函数调用（函数后没有括号的情况）
@@ -134,12 +135,17 @@ public class ExprConverter {
 	// 插入隐式乘号（规则不变）
 	private String insertImplicitMultiplication(String expr) {
 		expr = expr.replaceAll("(\\d)([a-zA-Z])", "$1*$2");
-		expr = expr.replaceAll("([a-zA-Z])(\\d)", "$1*$2");
-		expr = expr.replaceAll("([a-zA-Z])([a-zA-Z])", "$1*$2");
+		System.out.println("DEBUG: " + expr);
+		expr = expr.replaceAll("(x)([a-zA-Z])", "$1*$2");
+		System.out.println("DEBUG: " + expr);
 		expr = expr.replaceAll("(\\d)(\\()", "$1*$2");
-		expr = expr.replaceAll("([a-zA-Z])(\\()", "$1*$2");
-		expr = expr.replaceAll("(\\))(\\d)", "$1*$2");
+		System.out.println("DEBUG: " + expr);
+		expr = expr.replaceAll("(x|Pi|E)(\\()", "$1*$2");
+		System.out.println("DEBUG: " + expr);
+		expr = expr.replaceAll("(\\))(\\()", "$1*$2");
+		System.out.println("DEBUG: " + expr);
 		expr = expr.replaceAll("(\\))([a-zA-Z])", "$1*$2");
+		System.out.println("DEBUG: " + expr);
 		return expr;
 	}
 

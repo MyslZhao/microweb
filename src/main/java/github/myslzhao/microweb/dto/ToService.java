@@ -12,7 +12,35 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class ToService {
 
 	/// 表达式串
-	@Schema(description = "x,y表达式", example = "y=2x+1", type = "String")
+	@Schema(description = """
+            x,y表达式，支持的写法和函数如下：
+            - y=sin(x)
+            - y=ln(x)
+            - y=log(x)
+            - y=cos(x)
+            - y=tan(x)
+            - y=cot(x)
+            - y=sec(x)
+            - y=csc(x)
+            - y=arcsin(x)
+            - y=arccos(x)
+            - y=arctan(x)
+            - y=sinh(x)
+            - y=cosh( x )
+            - y=tanh(x)
+            - y=sqrt(x)
+            - y=abs(x)
+            - y=x^3
+            - y=sin(ln(x))
+            - y=2x^(Pi)
+            - y=Pi * E * x
+            
+            下面的写法为错误写法:
+            - y=PiEx (字母量之间要加显式乘号)
+            - y=( 2x + 1 ) 3 (数字放在多项式后时要加显式乘号)
+            - y=x^2(x+1) (会识别成(x^2)*(x+1))
+            """
+			, example = "y=2x+1", type = "String")
 	private String expression;
 
 	/// x最小值

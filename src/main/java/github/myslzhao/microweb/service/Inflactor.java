@@ -23,7 +23,7 @@ public class Inflactor {
 		try {
 			EvalEngine engine = EvalEngine.get();
 			IExpr result = engine.evaluate(exprWithValue);
-			return result.evalDouble();
+			return engine.evalDouble(result);
 		} catch (Exception e) {
 			return Double.NaN;
 		}
